@@ -156,6 +156,7 @@
     <ClCompile Include="advent3.cpp" />
     <ClCompile Include="advent4.cpp" />
     <ClCompile Include="advent5.cpp" />
+    <ClCompile Include="advent6.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="md5.cpp" />
   </ItemGroup>
@@ -165,6 +166,7 @@
     <ClInclude Include="advent3.h" />
     <ClInclude Include="advent4.h" />
     <ClInclude Include="advent5.h" />
+    <ClInclude Include="advent6.h" />
     <ClInclude Include="md5.h" />
   </ItemGroup>
   <ItemGroup>
@@ -172,6 +174,7 @@
     <Text Include="advent2.txt" />
     <Text Include="advent3.txt" />
     <Text Include="advent4.txt" />
+    <Text Include="advent6.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

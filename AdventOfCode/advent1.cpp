@@ -66,7 +66,7 @@ unsigned int process(const std::string & input, dir d = north, bool twice = fals
 	return manhattan(x, y);
 }
 
-void advent1() {
+void advent1(){ 
 	std::ifstream ifs("advent1.txt");
 	
 	std::string line;
