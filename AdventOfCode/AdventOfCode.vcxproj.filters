@@ -30,6 +30,12 @@
     <ClCompile Include="advent4.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="advent5.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="md5.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="advent1.h">
@@ -42,6 +48,12 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="advent4.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="advent5.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="md5.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
