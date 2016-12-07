@@ -23,7 +23,7 @@ bool has_abba(std::string & s) {
 void collect_abas(std::string & s, std::set <std::string> & v) {
 	for (unsigned i = 0; i < s.length() - 2; i++) {
 		if (s[i] == s[i + 2] && s[i] != s[i + 1])
-			v.insert(s.substr(i, 3));
+			v.emplace(s.substr(i, 3));
 	}
 }
 
