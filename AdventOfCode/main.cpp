@@ -4,6 +4,7 @@
 #include "advent4.h"
 #include "advent5.h"
 #include "advent6.h"
+#include "advent7.h"
 #include <iostream>
 #include <vector>
 #include <tuple>
@@ -23,10 +24,13 @@ int main() {
 	advent4();*/
 
 	//test_advent5();
-	//advent5();
+	//advent5();	
 
-	test_advent6();
-	advent6();
+	//test_advent6();
+	//advent6();
+
+	test_advent7();
+	advent7();
 
 	std::cin.get();
 }

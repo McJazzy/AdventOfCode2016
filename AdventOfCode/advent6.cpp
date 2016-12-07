@@ -16,7 +16,7 @@ std::string process(std::istream & is, bool part2 = false) {
 	std::array<std::map<char, int>, 8> freq;
 	std::string res;
 	while (std::getline(is, line)) {
-		for (int i(0); i < line.size(); i++)
+		for (unsigned i(0); i < line.size(); i++)
 			freq[i][line[i]]++;
 	}
 	for (auto & f : freq) {		

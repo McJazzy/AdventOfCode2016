@@ -35,7 +35,7 @@ std::pair<bool,unsigned int> process(std::string input, bool part2 = false) {
 		std::transform(freq.begin(), freq.end(), std::back_inserter(ordered), [](kv const & p) {return p; });
 		std::sort(ordered.begin(), ordered.end(), [](kv &left, kv &right) {return left.second > right.second; });
 
-		for (int i = 0; i < m.str(3).length(); ++i) {
+		for (unsigned i = 0; i < m.str(3).length(); ++i) {
 			if (m.str(3)[i] != ordered[i].first) {
 				match = false; break;
 			}
