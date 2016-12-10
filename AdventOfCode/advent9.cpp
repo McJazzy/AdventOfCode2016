@@ -9,7 +9,7 @@
 
 const static std::regex r("\\((\\d+)x(\\d+)\\)");
 
-long long decode(std::string && s, bool part2) {
+long long decode(std::string & s, bool part2) {
 	std::smatch m;
 	if (!std::regex_search(s, m, r))
 		return s.length();
@@ -23,7 +23,7 @@ std::string process<9>(std::istream & is, bool part2) {
 	std::vector<std::pair<unsigned, unsigned>> dec;
 	long long length = 0;
 	for (std::string line; std::getline(is, line);) {		
-		length += decode(std::move(line), part2);
+		length += decode(line, part2);
 	}
 	return std::to_string(length);
 }
