@@ -158,10 +158,13 @@
     <ClCompile Include="advent5.cpp" />
     <ClCompile Include="advent6.cpp" />
     <ClCompile Include="advent7.cpp" />
+    <ClCompile Include="advent8.cpp" />
+    <ClCompile Include="advent9.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="md5.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="advent.h" />
     <ClInclude Include="advent1.h" />
     <ClInclude Include="advent2.h" />
     <ClInclude Include="advent3.h" />
@@ -169,6 +172,8 @@
     <ClInclude Include="advent5.h" />
     <ClInclude Include="advent6.h" />
     <ClInclude Include="advent7.h" />
+    <ClInclude Include="advent8.h" />
+    <ClInclude Include="advent9.h" />
     <ClInclude Include="md5.h" />
   </ItemGroup>
   <ItemGroup>
@@ -178,6 +183,8 @@
     <Text Include="advent4.txt" />
     <Text Include="advent6.txt" />
     <Text Include="advent7.txt" />
+    <Text Include="advent8.txt" />
+    <Text Include="advent9.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
