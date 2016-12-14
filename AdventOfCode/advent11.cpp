@@ -16,207 +16,239 @@ enum device_type {microchip, generator, num_devices};
 enum dir {up, down, num_dirs};
 enum { num_floors = 4};
 
-typedef std::pair<device_type, unsigned> device;
-typedef std::array<std::set<device>, num_floors> dev_list;
-typedef std::pair<dir, std::vector<device>> move;
+// micro - gen
+typedef std::pair < dir, std::vector<unsigned>> move;
+typedef std::vector<unsigned> dev_list;
+
+inline uint64_t hash(uint64_t a, uint64_t b)
+{
+	return (uint64_t)1 << (a << 4) << (b << 2);
+}
+inline unsigned first(unsigned p) { return (p & 0xff00) >> 8; }
+inline unsigned second(unsigned p) { return p & 0xff; }
+inline unsigned mp(unsigned first, unsigned second) { return first << 8 | second; }
+inline void set_first(unsigned v, unsigned & prev)  { prev = ((v << 8) | (prev & 0x00FF)); }
+inline void set_second(unsigned v, unsigned & prev) { prev = (prev & 0xFF00) | v; }
 
 struct state {
-	unsigned e;
+	unsigned elev;
 	dev_list d;
-	unsigned num_elem;
 	unsigned steps;	
 	unsigned dist;
-	std::set<device> current() const {
-		return d[e];
+	
+	void add_elem(unsigned m, unsigned g) {		
+			d.push_back(mp(m,g));		
 	}
 
-	bool valid_state() const {
-		const std::set<device> & l = d[e];
-		// iterate over all microchips
-		auto it = std::find_if(l.begin(), l.end(), [](const device &d) {
-			return d.first == microchip;
-		});
+	void calc_dist() {
+		//calculate distance to all unit on 4th floor
+		dist = steps;
+		for (unsigned dev : d)
+			dist += 10 * (2 * (num_floors - 1) - first(dev) - second(dev)) * (2 * (num_floors - 1) - first(dev) - second(dev));
+	}
 
-		for (; it != l.end(); ++it) {
-			bool matching_gen = std::find_if(l.begin(), l.end(), [it](const device & d) {
-				return d.first == generator && it->second == d.second;
-			}) != l.end();
-
-			bool non_matching_gen = std::any_of(l.begin(), l.end(), [it](const device & d) {
-				return d.first == generator && it->second != d.second;
-			});
-
-			if (non_matching_gen && !matching_gen)
-				return false;
+	bool equals(const state &  other) const {
+		if (elev != other.elev)
+			return false;
+				
+		// compare 2 unsorted vectors
+		uint64_t this_vec = 0, other_vec = 0;
+		for (unsigned i = 0; i < d.size(); i++) {
+			this_vec += hash(first(d[i]), second(d[i]));
+			other_vec += hash(first(other.d[i]), second(other.d[i]));
 		}
+		return this_vec == other_vec;
+	}
 
-		return true;
+	unsigned dev_on_floor(unsigned n) const {
+		unsigned sum = 0;
+		for (auto dev : d) {
+			sum += first(dev) == n;
+			sum += second(dev) == n;
+		}
+		return sum;
 	}
 };
 
-void alg(const state & s, std::vector<move> & moves, std::vector<state> & states, std::vector<unsigned> & scores);
 
-std::vector<std::vector<unsigned >> comb(unsigned N, unsigned K)
-{
-	if (N < 2) return{ {} };
-	std::vector<std::vector<unsigned>> c;
-	std::string bitmask(K, 1); // K leading 1's
-	bitmask.resize(N, 0); // N-K trailing 0's
 
-// print integers and permute bitmask
-	do {
-		std::vector<unsigned> combination;
-		for (int i = 0; i < N; ++i) // [0..N-1] integers
-		{
-			if (bitmask[i]) combination.push_back(i);
+bool valid_state(const dev_list & d) {
+	bool prot = true;
+	for (int i = 0; i < d.size(); ++i) {
+		unsigned dev = d[i];
+		unsigned mchip_floor = first(dev);
+		if (first(dev) != second(dev)) {
+			for (int j = 0; j < d.size(); j++) {
+				if (second(d[j]) == mchip_floor)
+					return false;
+			}
 		}
-		c.push_back(combination);
-	} while (std::prev_permutation(bitmask.begin(), bitmask.end()));
-	return c;
+	}
+	return prot;
 }
 
-bool repeated_move(const move & last, const move & current) {
-	return last.first != current.first && last.second == current.second;
+// N= 3 returns (0,1)(1,2)(0,2)
+const std::vector<std::pair<unsigned, unsigned>> & comb2(unsigned N)
+{
+	static bool init;
+	static std::array<std::vector<std::pair<unsigned, unsigned>>,16> arr;
+
+	if (!init) {
+		for (unsigned num = 2; num < 16; num++) {
+			std::vector<std::vector<unsigned>> c;
+			std::string bitmask(2, 1); // K leading 1's
+			bitmask.resize(num, 0); // N-K trailing 0's								  
+			do {
+				std::vector<unsigned> combination;
+				for (int i = 0; i < num; ++i) // [0..N-1] integers
+				{
+					if (bitmask[i]) combination.push_back(i);
+				}
+				arr[num].push_back(std::make_pair(combination.at(0), combination.at(1)));
+				
+			} while (std::prev_permutation(bitmask.begin(), bitmask.end()));
+		}		
+		init = true;
+	}
+	
+	return arr[N];	
 }
 
 bool repeated_state(std::vector<state> & states, const state & s) {
 	bool repeated = false;
-	
-	for (const state & o : states) {
-		if (s.steps >= o.steps && o.d == s.d) {				
+
+	for (auto it = states.rbegin(); it != states.rend(); ++it) {
+		if (s.equals(*it)) {				
 			return true;
 		}
 	}	
 	return repeated;
 }
 
-bool finished(const state & s) {
-	if (s.e != 3)
+bool finished(const state & s) {	
+	if (s.elev != num_floors - 1)
 		return false;
-
-	unsigned c = 0;
-	unsigned g = 0;
-	for (auto d : s.d[3]) {
-		if (d.first == microchip)
-			c++;
-		else
-			g++;
-	}	
-	return c == s.num_elem && g == s.num_elem;
+	
+	for (int i = 0; i < s.d.size(); ++i)
+	{
+		if (first(s.d[i]) != num_floors - 1 || second(s.d[i]) != num_floors - 1)
+			return false;
+	}
+	return true;
 }
 
-state apply_move(const state & s, const move & m) {
-	//make a copy
-	state new_state(s);		
-	auto & cur = new_state.d[s.e];
-
-	if (s.e == 0 && m.first == down) {
-		std::cout << "not a valid move!" << std::endl;
-		return new_state;
-	}
-
+state apply_move(const state & s, move & m) {	
+	int count = 0;
+	state new_state(s);
 	new_state.steps++;
-	new_state.e = m.first == down ? new_state.e - 1 : new_state.e + 1;
+	new_state.elev = m.first == down ? new_state.elev - 1 : new_state.elev + 1;
 
-	for (auto & dev : m.second) {
-		// remove from current floor
-		cur.erase(dev);
-		
-		// add to new floor
-		new_state.d[new_state.e].emplace(dev);
+	for (unsigned idx : m.second) {
+		count = 0;
+		for (unsigned i = 0; i < s.d.size(); ++i) {
+			if (first(s.d[i]) == s.elev) {
+				count++;
+				if (idx == count - 1) {
+					set_first((m.first == up) ? first(s.d[i]) + 1 : first(s.d[i]) - 1, new_state.d[i]);
+					break;
+				}				
+			}
+			if (second(s.d[i]) == s.elev) {
+				count++;
+				if (idx == count - 1) {
+					set_second((m.first == up) ? second(s.d[i]) + 1 : second(s.d[i]) - 1, new_state.d[i]);
+					break;
+				}				
+			}
+		}
 	}
 
+	new_state.calc_dist();
 	return new_state;
 }
 
-void alg(const state & s, std::vector<move> & moves, std::vector<state> & states, std::vector<unsigned> & scores) {
-	//std::cout << "step: " << s.steps << std::endl;
-	if (finished(s))
-	{
-		std::cout << "found : " << moves.size() << std::endl;
-		scores.push_back(s.steps);		
-		//return true;
-	}  else {
-		if (!s.valid_state()) {
-			//std::cout << "alg() - invalid" << std::endl;
-			return;
+unsigned alg(state & init) {
+
+	auto cmp = [](const state & s1, const state & s2) {return s1.dist > s2.dist; };
+	std::priority_queue<state, std::vector<state>, decltype(cmp)> to_visit(cmp);	
+
+	init.calc_dist();
+
+	to_visit.push(init);
+	std::vector<state> visited;
+	std::vector<unsigned> scores;
+	bool found = false;
+
+	while (!to_visit.empty() && !found) {
+		const state s = to_visit.top();
+		to_visit.pop();
+		visited.push_back(s);
+
+		if (finished(s))
+		{
+			std::cout << "steps: " << s.steps << " visited nodes: " << visited.size() << std::endl;
+			scores.push_back(s.steps);
+			found = true;
 		}
-
-		std::set<device> & cur = s.current();
-		std::vector<device> vec(cur.begin(), cur.end());
-
-		for (int _d = up; _d < num_dirs; _d++) {
-			dir d = (dir)_d;
-			if (s.e == 3 && d == up)
-				continue;
-			if (s.e == 0 && d == down)
-				continue;
-
-			if (s.e == 1 && d == down && s.d[0].empty())
-				continue;
-			else if (s.e == 2 && d == down && s.d[0].empty() && s.d[1].empty())
-				continue;		
-
+		else {
 			std::vector<move> next_moves;
-
-			if (d == up) {
-				if (cur.size() > 1) {
-					auto v = comb(cur.size(), 2);
+			for (int _d = up; _d < num_dirs; _d++) {
+				dir d = (dir)_d;
+				if (s.elev == 3 && d == up)
+					continue;
+				if (s.elev == 0 && d == down)
+					continue;
+				
+				if (s.elev == 1 && d == down && !s.dev_on_floor(0))
+					continue;
+				else if (s.elev == 2 && d == down && !s.dev_on_floor(0) && !s.dev_on_floor(1))
+					continue;
+				
+				if (d == up && s.dev_on_floor(s.elev) > 1) {
+					auto v = comb2(s.dev_on_floor(s.elev));
 					for (auto c : v) {
-						move m{ (dir)d, std::vector<device>{ vec[c[0]], vec[c[1]]} };
+						move m{ (dir)d, std::vector<unsigned>{c.first, c.second} };
 						next_moves.push_back(m);
 					}
-				}
-
+				}				
+				
 				// onesies
-				for (auto dev : cur) {
-					move m{ (dir)d, std::vector<device>{ dev } };
+				for (unsigned i = 0; i < s.dev_on_floor(s.elev); ++i) {
+					move m{ (dir)d, std::vector<unsigned>{ i } };
 					next_moves.push_back(m);
-				}
+				}									
 			}
-			else {
-				// onesies
-				for (auto dev : cur) {
-					move m{ (dir)d, std::vector<device>{ dev } };
-					next_moves.push_back(m);
-				}
-				if (cur.size() > 1) {
-					auto v = comb(cur.size(), 2);
-					for (auto c : v) {
-						move m{ (dir)d, std::vector<device>{ vec[c[0]], vec[c[1]]} };
-						next_moves.push_back(m);
-					}
-				}
-			}
+					
+			bool twosee = false;
+			for (auto & m : next_moves) {			
+				if (twosee && m.second.size() == 1)
+					continue;
 
-
-			for (auto & m : next_moves) {
-				state new_state(apply_move(s, m));
-				if (new_state.valid_state() && (moves.empty() || (!repeated_move(moves.back(), m) && !repeated_state(states, new_state)))) {
-					moves.push_back(m);
-					states.push_back(new_state);					
-					alg(new_state, moves, states, scores);
-					moves.pop_back();
-					break;
+				state new_state = apply_move(s, m);
+				if (valid_state(new_state.d) && !repeated_state(visited, new_state)) {				
+					if (m.first == up && m.second.size() == 2)
+						twosee = true;
+					to_visit.push(new_state);								
 				}
 			}
-		}		
+		}
 	}
-	return;
+	return *std::min_element(scores.begin(), scores.end());
 }
 
 template <>
 std::string process<11>(std::istream & is, bool part2) {
-	std::regex floor_regex("(first|second|third|fourth)");
-	std::regex elems_regex("(strontium|curium|plutonium|thulium|ruthenium|hydrogen|lithium|dilithium|elerium)(-compatible micro(c)hip| (g)enerator)");
+	std::regex floor_regex("(\\w+) floor");
+	std::regex elems_regex("(\\w+)(-compatible micro(c)hip| (g)enerator)");
 	std::smatch m;
-	state dlist;
+	state init;
 	unsigned elem_count = 0;
+	std::map<unsigned, std::pair<unsigned, unsigned>> pairs;
 
 	for (std::string line; std::getline(is, line); ) {
 		unsigned floor = floors.size();
 		unsigned elem = elems.size();
-		device_type dev = num_devices;
+		device_type dev = num_devices;		
 
 		if (std::regex_search(line, m, floor_regex)) {
 			floor = floors[m.str(1)];
@@ -226,32 +258,29 @@ std::string process<11>(std::istream & is, bool part2) {
 		for (std::sregex_iterator i = words_begin; i != words_end; ++i) {
 			elem = elems[i->str(1)];
 			dev = i->str(3) == "c" ? microchip : generator;
-			if (dev == microchip) elem_count++;
-			if (floor < floors.size() && elem < elems.size())
-				dlist.d[floor].emplace(std::make_pair(dev, elem));
-		}		
-
-		if (part2) {
-			dlist.d[0].emplace(std::make_pair(microchip, 7));
-			dlist.d[0].emplace(std::make_pair(generator, 7));
-			dlist.d[0].emplace(std::make_pair(microchip, 8));
-			dlist.d[0].emplace(std::make_pair(generator, 8));
+			if (dev == microchip)
+				pairs[elem].first = floor;
+			else
+				pairs[elem].second = floor;
 		}
 	}
 
-	// start at 0
-	dlist.num_elem = elem_count;
-	dlist.e = 0;
-	dlist.steps = 0;
+	if (part2) {
+		pairs[5] = { 0 , 0 };
+		pairs[6] = { 0 , 0 };
+	}
 
-	std::vector<state> states;
-	states.push_back(dlist);
-	std::vector<move> moves;
-	std::vector<unsigned> scores;
-	alg(dlist, moves, states, scores);
-	//std::cout << "advent11: " <<  << std::endl;	
+	for (auto pp : pairs) {
+		init.add_elem(pp.second.first, pp.second.second);
+	}
+
+	// start at 0	
+	init.elev = 0;
+	init.steps = 0;	
+		
+	unsigned min_score = alg(init);
 	
-	return std::to_string(*std::min_element(scores.begin(), scores.end()));
+	return std::to_string(min_score);
 }
 
 template <>
