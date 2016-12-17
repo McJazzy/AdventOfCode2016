@@ -12,8 +12,8 @@
 #include <functional>
 
 int main() {
-	test<11>();
-	solve<11>();
+	test<12>();
+	solve<12>();
 
 	std::cin.get();
 }

@@ -54,6 +54,9 @@
     <ClCompile Include="advent11.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="advent12.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="md5.h">
@@ -95,6 +98,9 @@
     <ClInclude Include="advent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="advent12.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="advent9.txt">
@@ -125,6 +131,9 @@
       <Filter>Resource Files</Filter>
     </Text>
     <Text Include="advent11.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="advent12.txt">
       <Filter>Resource Files</Filter>
     </Text>
   </ItemGroup>
