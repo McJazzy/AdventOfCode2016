@@ -369,11 +369,14 @@ std::string MD5::hexdigest() const
 	if (!finalized)
 		return "";
 
-	char buf[33];
-	for (int i = 0; i<16; i++)
-		sprintf(buf + i * 2, "%02x", digest[i]);
-	buf[32] = 0;
+	const char * tmp = "0123456789abcdef";
 
+	char buf[33];
+	for (int i = 0; i < 16; i++) {
+		buf[2 * i] = tmp[digest[i] >> 4];
+		buf[2 * i + 1] = tmp[digest[i] & 0xF];
+	}
+	buf[32] = 0;
 	return std::string(buf);
 }
 

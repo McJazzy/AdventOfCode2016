@@ -60,6 +60,9 @@
     <ClCompile Include="advent13.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="advent14.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="md5.h">
