@@ -157,6 +157,8 @@
     <ClCompile Include="advent12.cpp" />
     <ClCompile Include="advent13.cpp" />
     <ClCompile Include="advent14.cpp" />
+    <ClCompile Include="advent15.cpp" />
+    <ClCompile Include="advent16.cpp" />
     <ClCompile Include="advent2.cpp" />
     <ClCompile Include="advent3.cpp" />
     <ClCompile Include="advent4.cpp" />
