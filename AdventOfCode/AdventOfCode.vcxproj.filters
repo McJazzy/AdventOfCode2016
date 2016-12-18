@@ -57,22 +57,13 @@
     <ClCompile Include="advent12.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="advent13.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="md5.h">
       <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="advent10.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="advent11.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="advent9.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="advent8.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="advent7.h">
       <Filter>Header Files</Filter>
@@ -96,9 +87,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="advent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="advent12.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

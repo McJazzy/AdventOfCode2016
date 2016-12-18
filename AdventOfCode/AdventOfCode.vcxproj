@@ -155,6 +155,7 @@
     <ClCompile Include="advent10.cpp" />
     <ClCompile Include="advent11.cpp" />
     <ClCompile Include="advent12.cpp" />
+    <ClCompile Include="advent13.cpp" />
     <ClCompile Include="advent2.cpp" />
     <ClCompile Include="advent3.cpp" />
     <ClCompile Include="advent4.cpp" />
@@ -169,17 +170,12 @@
   <ItemGroup>
     <ClInclude Include="advent.h" />
     <ClInclude Include="advent1.h" />
-    <ClInclude Include="advent10.h" />
-    <ClInclude Include="advent11.h" />
-    <ClInclude Include="advent12.h" />
     <ClInclude Include="advent2.h" />
     <ClInclude Include="advent3.h" />
     <ClInclude Include="advent4.h" />
     <ClInclude Include="advent5.h" />
     <ClInclude Include="advent6.h" />
     <ClInclude Include="advent7.h" />
-    <ClInclude Include="advent8.h" />
-    <ClInclude Include="advent9.h" />
     <ClInclude Include="md5.h" />
   </ItemGroup>
   <ItemGroup>
