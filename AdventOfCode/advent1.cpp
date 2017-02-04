@@ -37,13 +37,15 @@ std::string process<1>(std::istream & is, bool part2) {
 
 	int x = 0;
 	int y = 0;
-
-	for (int dist; is >> d >> dist; is.ignore(1, ',')) {
-		rot(funcs, d == 'R');
-		for (int i = 0; i < dist; i++) {
-			std::tie(x, y) = funcs[0](x, y, 1);
-			if (part2 && !visited.emplace(x, y).second) {
-				return std::to_string(manhattan(x, y));
+	for (std::string line; std::getline(is, line);) {
+		std::stringstream ss(line);
+		for (int dist; ss >> d >> dist; ss.ignore(1, ',')) {
+			rot(funcs, d == 'R');
+			for (int i = 0; i < dist; i++) {
+				std::tie(x, y) = funcs[0](x, y, 1);
+				if (part2 && !visited.emplace(x, y).second) {
+					return std::to_string(manhattan(x, y));
+				}
 			}
 		}
 	}
