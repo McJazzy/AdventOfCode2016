@@ -10,13 +10,20 @@
 
 const static std::regex r("\\((\\d+)x(\\d+)\\)");
 
-long long decode(std::string & s, bool part2) {
+long long decode(const std::string & s, bool part2) {
 	std::smatch m;
 	if (!std::regex_search(s, m, r))
 		return s.length();
 	long long consume = std::stoi(m.str(1)), times = std::stoi(m.str(2));
-	long long consumed = !part2 ? consume : decode(s.substr(m.position() + m.length(), consume), part2);
-	return m.position() + consumed * times + decode(s.substr(m.position() + m.length() + consume), part2);
+	std::string inner = s.substr(m.position() + m.length(), consume);
+	std::string rest = s.substr(m.position() + m.length() + consume);
+	long long inner_length = decode(inner, part2);
+	long long consumed = !part2 ? consume : inner_length;
+	return m.position() + consumed * times + decode(rest, part2);
+}
+
+long long decode(std::string && s, bool part2) {
+	return decode(s, part2);
 }
 
 template <>

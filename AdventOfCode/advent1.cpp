@@ -1,15 +1,14 @@
 #include "advent.h"
-
-#include <iostream>
-#include <fstream>
 #include <vector>
 #include <tuple>
 #include <set>
 #include <cmath>
-#include <istream>
 #include <functional>
 #include <algorithm>
 
+enum dir {
+	north, east, south, west, num_dirs
+};
 
 unsigned int manhattan(int x, int y) {
 	return std::abs(x) + std::abs(y);
@@ -52,19 +51,18 @@ std::string process<1>(std::istream & is, bool part2) {
 	return std::to_string(manhattan(x, y));
 }
 
-
-
-void advent1() {
+template<>
+void solve<1>() {
 	std::ifstream ifs("advent1.txt");
 	std::cout << "advent1: " << process<1>(ifs, false) << std::endl;
 	std::cout << "advent1.part2: "
 			<< process<1>(std::ifstream("advent1.txt"), true) << std::endl;
 }
 
-void test_advent1() {
-	/*assert(process("R5, L5, R5, R3") == 12);
-	 assert(process("R2, R2, R2") == 2);
-	 assert(process("R2, L3, R5") == 10);*/
-
+template<>
+void test<1>() {
+	assert(process<1>(std::istringstream("R5, L5, R5, R3"), false) == "12");
+	assert(process<1>(std::istringstream("R2, R2, R2"), false) == "2");
+	assert(process<1>(std::istringstream("R2, L3, R5"), false) == "10");
 	assert(process<1>(std::istringstream("R8, R4, R4, R8"), true) == "4");
 }

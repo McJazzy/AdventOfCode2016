@@ -1,63 +1,56 @@
-#include "advent6.h"
-#include <string>
+#include "advent.h"
+
 #include <array>
-#include <sstream>
-#include <fstream>
-#include <istream>
-#include <iostream>
-#include <assert.h>
 #include <vector>
 #include <map>
+#include <algorithm>
 
-#pragma warning(disable:4996)
-
-std::string process(std::istream & is, bool part2 = false) {
-	std::string line;
+template<>
+std::string process<6>(std::istream & is, bool part2) {
 	std::array<std::map<char, int>, 8> freq;
 	std::string res;
-	while (std::getline(is, line)) {
+	std::string line;
+	for (;std::getline(is, line);) {
 		for (unsigned i(0); i < line.size(); i++)
 			freq[i][line[i]]++;
 	}
-	for (auto & f : freq) {		
-		if(!f.empty())
-			res += std::max_element(f.begin(), f.end(), [part2](const auto & lhs, const auto & rhs) {
-				return part2 ? lhs.second > rhs.second : lhs.second < rhs.second; })->first;
+	for (auto & f : freq) {
+		if (!f.empty())
+			res +=
+					std::max_element(f.begin(), f.end(),
+							[part2](const auto & lhs, const auto & rhs) {
+								return part2 ? lhs.second > rhs.second : lhs.second < rhs.second;})->first;
 	}
-	return res.substr(0,line.size());
+	return res.substr(0, line.size());
 }
 
-void advent6() {
-	std::ifstream ifs("advent6.txt");	
-	std::cout << "advent6: " << process(ifs) << std::endl;
-	std::ifstream ifs2("advent6.txt");	
-	std::cout << "advent6.part2: " << process(ifs2, true) << std::endl;
+template<>
+void solve<6>() {
+	std::ifstream ifs("advent6.txt");
+	std::cout << "advent6: " << process<6>(ifs, false) << std::endl;
+	std::ifstream ifs2("advent6.txt");
+	std::cout << "advent6.part2: " << process<6>(ifs2, true) << std::endl;
 }
 
+template<>
+void test<6>() {
+	std::string input("eedadn\n"
+			"drvtee\n"
+			"eandsr\n"
+			"raavrd\n"
+			"atevrs\n"
+			"tsrnev\n"
+			"sdttsa\n"
+			"rasrtv\n"
+			"nssdts\n"
+			"ntnada\n"
+			"svetve\n"
+			"tesnvt\n"
+			"vntsnd\n"
+			"vrdear\n"
+			"dvrsen\n"
+			"enarar");
 
-void test_advent6() {
-	std::string input(
-	"eedadn\n"
-	"drvtee\n"
-	"eandsr\n"
-	"raavrd\n"
-	"atevrs\n"
-	"tsrnev\n"
-	"sdttsa\n"
-	"rasrtv\n"
-	"nssdts\n"
-	"ntnada\n"
-	"svetve\n"
-	"tesnvt\n"
-	"vntsnd\n"
-	"vrdear\n"
-	"dvrsen\n"
-	"enarar");
-
-	std::istringstream is;
-	is.str(input);
-	assert(process(is) == "easter");
-	is.clear();
-	is.str(input);
-	assert(process(is, true) == "advent");
+	assert(process<6>(std::istringstream(input), false) == "easter");
+	assert(process<6>(std::istringstream(input), true) == "advent");
 }

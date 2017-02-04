@@ -3,6 +3,9 @@
 #include <istream>
 #include <assert.h>
 #include <string>
+#include <sstream>
+#include <fstream>
+#include <iostream>
 
 template <unsigned N>
 std::string process(std::istream & is, bool part2);

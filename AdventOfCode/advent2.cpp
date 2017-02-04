@@ -1,8 +1,4 @@
-#include <string>
-#include <assert.h>
-#include <iostream>
-#include <sstream>
-#include <fstream>
+#include "advent.h"
 #include <map>
 #include <functional>
 #include <math.h>
@@ -87,14 +83,16 @@ std::string process(std::string input, bool part2 = false) {
 	return res;
 }
 
-void advent2() {
+template<>
+void solve<2>() {
 	std::ifstream f("advent2.txt");
 	std::string s = std::string((std::istreambuf_iterator<char>(f)),(std::istreambuf_iterator<char>()));
 	std::cout << "advent2: " << process(s) << std::endl;
 	std::cout << "advent2.part2: " << process(s, true) << std::endl;
 }
 
-void test_advent2() {
+template<>
+void test<2>() {
 	assert(process("ULL\nRRDDD\nLURDL\nUUUUD") == "1985");
 	assert(process("ULL\nRRDDD\nLURDL\nUUUUD", true) == "5DB3");
 }

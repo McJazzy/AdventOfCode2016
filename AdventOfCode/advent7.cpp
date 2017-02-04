@@ -1,13 +1,8 @@
-#include <istream>
-#include <sstream>
-#include <fstream>
-#include <string>
 #include <vector>
-#include <boost/algorithm/string/split.hpp>
-#include <boost/algorithm/string.hpp>
-#include <assert.h>
-#include <iostream>
 #include <set>
+#include <algorithm>
+#include "advent.h"
+
 
 bool has_abba(std::string & s) {
 	bool abba = false;
@@ -34,12 +29,17 @@ bool aba_match_bab(const std::set<std::string> & babs, const std::set<std::strin
 	}) > 0;	
 }
 
-unsigned int process(std::istream & is, bool part2 = false) {
+template <>
+std::string process<7>(std::istream & is, bool part2) {
 	unsigned int sum = 0;
 	std::string line;
 	while (std::getline(is, line)) {
 		std::vector<std::string> res;
-		boost::split(res, line, boost::is_any_of("[]"));
+
+		std::istringstream sub(line);
+		for (std::string p; std::getline(sub, p); sub.ignore(1, '['), sub.ignore(1,']'))
+			res.push_back(p);
+
 		if (!part2) {
 			bool regular_abba = false;
 			bool hyper_abba = false;
@@ -64,22 +64,23 @@ unsigned int process(std::istream & is, bool part2 = false) {
 			sum += aba_match_bab(abas, babs);						
 		}
 	}
-	return sum;
+	return std::to_string(sum);
 }
 
-void test_advent7() {	
-	assert(process(std::istringstream("abba[mnop]qrst")) == 1);
-	assert(process(std::istringstream("abcd[bddb]xyyx")) == 0);
-	assert(process(std::istringstream("aaaa[qwer]tyui")) == 0);
-	assert(process(std::istringstream("ioxxoj[asdfgh]zxcvbn")) == 1);
-
-	assert(process(std::istringstream("aaa[zzz]xyz[baaaaaaaaaaaaaaaabab]aaaaaaaaaba"), true) == 1);
-	assert(process(std::istringstream("xyx[xyx]xyx"), true) == 0);
-	assert(process(std::istringstream("aaa[kek]eke"), true) == 1);
-	assert(process(std::istringstream("zazbz[bzb]cdb"), true) == 1);
+template<>
+void test<7>() {
+	assert(process<7>(std::istringstream("abba[mnop]qrst"), false) == "1");
+	assert(process<7>(std::istringstream("abcd[bddb]xyyx"), false) == "0");
+	assert(process<7>(std::istringstream("aaaa[qwer]tyui"), false) == "0");
+	assert(process<7>(std::istringstream("ioxxoj[asdfgh]zxcvbn"), false) == "1");
+	assert(process<7>(std::istringstream("aaa[zzz]xyz[baaaaaaaaaaaaaaaabab]aaaaaaaaaba"), true) == "1");
+	assert(process<7>(std::istringstream("xyx[xyx]xyx"), true) == "0");
+	assert(process<7>(std::istringstream("aaa[kek]eke"), true) == "1");
+	assert(process<7>(std::istringstream("zazbz[bzb]cdb"), true) == "1");
 }
 
-void advent7() {		
-	std::cout << "advent7: " << process(std::ifstream("advent7.txt")) << std::endl;
-	std::cout << "advent7.part2: " << process(std::ifstream("advent7.txt"), true) << std::endl;
+template<>
+void solve<7>() {
+	std::cout << "advent7: " << process<7>(std::ifstream("advent7.txt"), false) << std::endl;
+	std::cout << "advent7.part2: " << process<7>(std::ifstream("advent7.txt"), true) << std::endl;
 }

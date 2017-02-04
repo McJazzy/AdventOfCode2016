@@ -1,4 +1,3 @@
-#pragma once
 #include "advent.h"
 #include <assert.h>
 #include <valarray>
@@ -61,6 +60,8 @@ std::string process(int find_x, int find_y, int num, bool part2) {
 				num++;
 		}		
 		return std::to_string(num);
+	} else {
+		return std::to_string(to_visit.size());
 	}
 }
 
