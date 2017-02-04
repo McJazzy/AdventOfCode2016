@@ -11,15 +11,12 @@
 #include <functional>
 #include <vector>
 #include <numeric>
-#include <boost/algorithm/string/split.hpp>
-#include <boost/lexical_cast.hpp>
-#include <boost/algorithm/string.hpp>
 
 bool valid_triangle(std::vector<std::string> dirs) {
 
-	int a = boost::lexical_cast<int>(dirs[0]);
-	int b = boost::lexical_cast<int>(dirs[1]);
-	int c = boost::lexical_cast<int>(dirs[2]);
+	int a = std::stoi(dirs[0]);
+	int b = std::stoi(dirs[1]);
+	int c = std::stoi(dirs[2]);
 
 	return (a + b > c) && (a + c > b) && (b + c > a);	
 }
@@ -49,8 +46,11 @@ void advent3() {
 		//part1
 
 		std::vector < std::string > res;
-		boost::trim(line);
-		boost::split(res, line, boost::is_any_of(" "), boost::token_compress_on);
+
+
+		std::istringstream is(line);
+		for (std::string p; std::getline(is, p); is.ignore(1, '-'))
+			res.push_back(p);
 
 		if (valid_triangle(res))
 			ok++;

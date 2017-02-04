@@ -25,7 +25,7 @@ std::string process(int find_x, int find_y, int num, bool part2) {
 	for (int y = 0; y < height; ++y) {
 		for (int x = 0; x < width; ++x) {
 			unsigned hash = (3 + x + 2 * y) * x + (y + 1) * y + num;			
-			maze[x + y * width] = (__popcnt(hash) % 2) != 0;			
+			maze[x + y * width] = (__builtin_popcount (hash) % 2) != 0;
 		}		
 	}
 	

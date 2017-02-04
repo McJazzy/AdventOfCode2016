@@ -97,10 +97,10 @@ const std::vector<std::pair<unsigned, unsigned>> & comb2(unsigned N)
 		for (unsigned num = 2; num < 16; num++) {
 			std::vector<std::vector<unsigned>> c;
 			std::string bitmask(2, 1); // K leading 1's
-			bitmask.resize(num, 0); // N-K trailing 0's								  
+			bitmask.resize(num, '\0'); // N-K trailing 0's
 			do {
 				std::vector<unsigned> combination;
-				for (int i = 0; i < num; ++i) // [0..N-1] integers
+				for (unsigned i = 0; i < num; ++i) // [0..N-1] integers
 				{
 					if (bitmask[i]) combination.push_back(i);
 				}

@@ -8,6 +8,7 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include <string>
 
 int find_triplet(const std::string & hex) {
 	for (int i = 0; i < hex.length() - 2; i++)

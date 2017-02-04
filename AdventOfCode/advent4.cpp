@@ -3,43 +3,48 @@
 #include <iostream>
 #include <map>
 #include <assert.h>
-#include <boost/algorithm/string/split.hpp>
-#include <boost/algorithm/string.hpp>
-#include <boost/lexical_cast.hpp>
 #include <fstream>
+#include <algorithm>
+#include <string>
 
-std::pair<bool,unsigned int> process(std::string input, bool part2 = false) {
+std::pair<bool, unsigned int> process(std::string input, bool part2 = false) {
 	std::regex s("([a-z-]+)-(\\d+)\\[([a-z]+)\\]");
 	std::sregex_iterator next(input.begin(), input.end(), s);
 	std::smatch m = *next;
-	unsigned int code = boost::lexical_cast<unsigned int>(m.str(2));	
+	unsigned int code = std::stoi(m.str(2));
 	bool match = true;
 
-	if (part2) {				
+	if (part2) {
 		std::string decipher = m.str(1);
-		std::transform(decipher.begin(), decipher.end(),decipher.begin(),
-			[code](char c) {if (c == '-') return ' '; else return char(((c - 'a' + code) % 26) + 'a'); });
-		match = decipher.find("north") != std::string::npos;		
-	}
-	else {
+		for( char & c : decipher)
+			c = (c == '-') ? ' ' : char(((c - 'a' + code) % 26) + 'a');
+		match = decipher.find("north") != std::string::npos;
+	} else {
 		std::vector<std::string> parts;
-		boost::split(parts, m.str(1), boost::is_any_of("-"));
+		std::istringstream is(m.str(1));
+		for (std::string p; std::getline(is, p); is.ignore(1, '-'))
+			parts.push_back(p);
 		typedef std::pair<char, int> kv;
 		std::map<char, int> freq;
 
-		for (auto i : parts) {for (auto j : i) {
+		for (auto i : parts) {
+			for (auto j : i) {
 				freq[j]++;
-		}}
+			}
+		}
 
 		std::vector<kv> ordered;
-		std::transform(freq.begin(), freq.end(), std::back_inserter(ordered), [](kv const & p) {return p; });
-		std::sort(ordered.begin(), ordered.end(), [](kv &left, kv &right) {return left.second > right.second; });
+		std::transform(freq.begin(), freq.end(), std::back_inserter(ordered),
+				[](kv const & p) {return p;});
+		std::sort(ordered.begin(), ordered.end(),
+				[](kv &left, kv &right) {return left.second > right.second;});
 
 		for (unsigned i = 0; i < m.str(3).length(); ++i) {
 			if (m.str(3)[i] != ordered[i].first) {
-				match = false; break;
+				match = false;
+				break;
 			}
-		}		
+		}
 	}
 	return std::make_pair(match, code);
 }
@@ -52,7 +57,8 @@ void advent4() {
 		bool match;
 		int code;
 		std::tie(match, code) = process(line);
-		if (match) sum += code;
+		if (match)
+			sum += code;
 
 		std::tie(match, code) = process(line, true);
 		if (match)

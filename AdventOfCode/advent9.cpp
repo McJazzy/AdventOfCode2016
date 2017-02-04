@@ -6,6 +6,7 @@
 #include <vector>
 #include <string>
 #include <regex>
+#include <string>
 
 const static std::regex r("\\((\\d+)x(\\d+)\\)");
 

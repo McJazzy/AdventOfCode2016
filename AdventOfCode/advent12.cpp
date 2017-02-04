@@ -8,20 +8,22 @@
 #include <map>
 #include <array>
 #include <functional>
-#include <boost/algorithm/string/split.hpp>
-#include <boost/algorithm/string.hpp>
 
 struct instr { std::string op; std::string op1; std::string op2; };
 
-template <unsigned N>
+template <>
 std::string process<12>(std::istream & is, bool part2) {
 	std::array<int, 4> regs = { 0, 0, part2, 0 };
 	std::vector<instr> instrs;	
 	unsigned pc = 0;
-	std::vector<std::string> results;
 	
 	for (std::string line; std::getline(is, line); ) {
-		boost::algorithm::split(results, line, boost::is_any_of(" "));
+
+		std::istringstream iss(line);
+		std::vector<std::string> results{
+		    std::istream_iterator<std::string>(iss), {}
+		};
+
 		if (results.size() == 2)
 			instrs.push_back({ results[0], results[1], "0" });
 		else

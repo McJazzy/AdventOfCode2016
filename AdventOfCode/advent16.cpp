@@ -13,7 +13,7 @@ std::string apply_checksum(std::string & c) {
 	return n;
 }
 
-std::string process(std::istream & is, unsigned len, bool part2) {		
+std::string process(std::istream && is, unsigned len, bool part2) {
 	std::string in; in.reserve(len * 2);
 	is >> in;
 	while (in.size() < len) {

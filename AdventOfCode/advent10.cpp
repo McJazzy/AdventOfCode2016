@@ -51,7 +51,7 @@ bool give(unsigned bot_id, unsigned cmp1, unsigned cmp2, std::vector<bot> & bots
 	return ret;
 }
 
-std::string process(std::istream & is, unsigned val1, unsigned val2, bool part2) {
+std::string process(std::istream && is, unsigned val1, unsigned val2, bool part2) {
 	std::smatch m;
 	std::regex v("(v)alue (\\d+) goes to bot (\\d+)"),
 		g("(b)ot (\\d+) gives low to (bot|output) (\\d+) and high to (bot|output) (\\d+)");

@@ -4,11 +4,11 @@
 #include <vector>
 #include <fstream>
 #include <iomanip>
-#include <boost/lexical_cast.hpp>
 #include <thread>
+#include <string>
+#include <cstdlib>
 
 #include "md5.h"
-#pragma warning(disable:4996)
 namespace adv5 {
 	char buffer[64];
 
@@ -31,7 +31,8 @@ namespace adv5 {
 				}
 				else {
 					if (isdigit(m.hexdigest()[5])) {
-						unsigned int pos = boost::lexical_cast<unsigned int>(m.hexdigest()[5]);						
+						char dig = m.hexdigest()[5];
+						int pos = (int)(dig - '0');
 						if (pos < 8 && result[pos] == '_') {									
 							std::cout << i << " " << m.hexdigest() << " pw: " << result << std::endl;
 							result[pos] = (char)m.hexdigest()[6];							
