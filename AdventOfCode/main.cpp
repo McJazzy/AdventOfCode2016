@@ -2,8 +2,8 @@
 #include <iostream>
 
 int main() {
-	test<1>();
-	solve<1>();
+	test<17>();
+	solve<17>();
 
 	std::cin.get();
 }

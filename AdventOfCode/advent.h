@@ -27,9 +27,9 @@ void solve();
 #ifdef __MINGW32__
 #  include <sstream>
 namespace std{
-inline int stoi(const std::string& s) {
+/*inline int stoi(const std::string& s) {
     return atoi(s.c_str());
-}
+}*/
 template<class T>
 inline std::string to_string(const T& x) {
     std::ostringstream stm;

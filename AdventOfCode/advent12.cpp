@@ -30,7 +30,7 @@ std::string process<12>(std::istream & is, bool part2) {
 			instrs.push_back({ results[0], results[1], results[2] });
 	}
 
-	auto eval = [&](std::string op) 
+	auto eval = [&](std::string op)
 	{
 		if (isalpha(op.at(0))) return regs[op.at(0) - 'a'];
 		else return std::stoi(op);

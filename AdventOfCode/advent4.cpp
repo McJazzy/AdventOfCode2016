@@ -12,7 +12,7 @@ std::string process<4>(std::istream & is, bool part2) {
 		std::regex s("([a-z-]+)-(\\d+)\\[([a-z]+)\\]");
 		std::sregex_iterator next(line.begin(), line.end(), s);
 		std::smatch m = *next;
-		unsigned int code = std::stoi(m.str(2));
+		int code = std::stoi(m.str(2));
 		bool match = true;
 
 		if (part2) {

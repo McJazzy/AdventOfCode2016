@@ -10,11 +10,11 @@ enum {l, h, options};
 enum {num_bots=210};
 
 struct bot {	
-	unsigned    value_target[2], value[2];	
+	int    value_target[2], value[2];
 	bool		value_set[2], output[2];	
 
-	void		set_value(unsigned v) {
-		unsigned cmin = value[l];
+	void		set_value(int v) {
+		int cmin = value[l];
 		value[l] = value_set[l] ? std::min({ v,cmin }) : v;
 		value[h] = std::max({ v,cmin });
 
@@ -22,19 +22,19 @@ struct bot {
 		value_set[l] = true;
 	}
 
-	unsigned	release(bool high) {
+	int	release(bool high) {
 		value_set[high] = false;
 		return value[high];
 	}
 };
 
-bool give(unsigned bot_id, unsigned cmp1, unsigned cmp2, std::vector<bot> & bots, std::vector<unsigned> & outputs) {
+bool give(int bot_id, int cmp1, int cmp2, std::vector<bot> & bots, std::vector<int> & outputs) {
 	bool ret = false;
 
 	bot & b = bots[bot_id];
 	if (b.value_set[h] && b.value_set[l]) {		
-		unsigned high = b.release(h);
-		unsigned low = b.release(l);
+		int high = b.release(h);
+		int low = b.release(l);
 
 		ret = (high == cmp1 && low == cmp2);
 						
@@ -51,12 +51,12 @@ bool give(unsigned bot_id, unsigned cmp1, unsigned cmp2, std::vector<bot> & bots
 	return ret;
 }
 
-std::string process(std::istream && is, unsigned val1, unsigned val2, bool part2) {
+std::string process(std::istream && is, int val1, int val2, bool part2) {
 	std::smatch m;
 	std::regex v("(v)alue (\\d+) goes to bot (\\d+)"),
 		g("(b)ot (\\d+) gives low to (bot|output) (\\d+) and high to (bot|output) (\\d+)");
 	std::vector<bot> bots(num_bots);
-	std::vector<unsigned> outputs(num_bots);
+	std::vector<int> outputs(num_bots);
 	
 	for (std::string line; std::getline(is, line); ) {
 		if (std::regex_search(line, m, v) || std::regex_search(line, m, g)) {
@@ -64,7 +64,7 @@ std::string process(std::istream && is, unsigned val1, unsigned val2, bool part2
 				bots[std::stoi(m.str(3))].set_value(std::stoi(m.str(2)));
 			}
 			else if (m.str(1) == "b") {			
-				unsigned bot_id = std::stoi(m.str(2));
+				int bot_id = std::stoi(m.str(2));
 				bots[bot_id].value_target[h] = std::stoi(m.str(6)); 
 				bots[bot_id].value_target[l] = std::stoi(m.str(4));
 				bots[bot_id].output[h] = m.str(5) == "output";
@@ -74,9 +74,9 @@ std::string process(std::istream && is, unsigned val1, unsigned val2, bool part2
 	}
 	
 	bool comb_seen = false;
-	unsigned output_bot = num_bots;
-	for (unsigned iter = 0; iter < num_bots; iter++) {
-		for (unsigned int i = 0; i < bots.size(); i++) {
+	int output_bot = num_bots;
+	for (int iter = 0; iter < num_bots; iter++) {
+		for (int i = 0; i < bots.size(); i++) {
 			comb_seen = give(i, val1, val2, bots, outputs);
 			if (comb_seen) {
 				output_bot = i;				

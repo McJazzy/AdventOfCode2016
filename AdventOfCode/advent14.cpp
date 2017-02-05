@@ -1,8 +1,6 @@
-#pragma warning(disable:4996)
-
 #include "advent.h"
 #include <assert.h>
-#include "md5.h"
+#include "lib/md5.h"
 #include <istream>
 #include <sstream>
 #include <string>

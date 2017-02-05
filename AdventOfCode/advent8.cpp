@@ -18,7 +18,7 @@ std::string process<8>(std::istream & is, bool part2) {
 	std::string line;
 	while (std::getline(is, line)) {
 		if (std::regex_match(line,  m, rect) || std::regex_match(line, m, col) || std::regex_match(line, m, row)) {
-			unsigned a = std::stoi(m.str(2)), b = std::stoi(m.str(3));
+			int a = std::stoi(m.str(2)), b = std::stoi(m.str(3));
 			char op = static_cast<char>(m.str(1).at(0));
 			if (op == 'r') {
 				std::gslice s(0, { b,a }, { x, 1 });
